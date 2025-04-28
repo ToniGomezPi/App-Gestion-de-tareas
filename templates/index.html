@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App Gestor de Tareas</title>
+    <!-- path del css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <!-- Boostrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Sketchy BootstrapCDN-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css"
+          integrity="sha384-RxqHG2ilm4r6aFRpGmBbGTjsqwfqHOKy1ArsMhHusnRO47jcGqpIQqlQK/kmGy9R" crossorigin="anonymous">
+    <!-- Font Permanent Marker -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+</head>
+<body>
+<main class="container p-3">
+    <h1 class="display-4 text-center mt-4 titulo"> App de gestión de Tareas</h1>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 my-auto"> <!--Este div ocupará 8 columnas del espacio (centrado)-->
+            <div class="card card_style"> <!--Creacion del objeto card-->
+                <div class="card-header">
+                    <!--Formulario-->
+                    <form action="/crear-tarea" method="post">
+                        <div class="form-group">
+                            <!-- Tarea -->
+                            Tarea:
+                            <input type="text" name="contenido_tarea" placeholder="Tarea" class="form-control"
+                                   autofocus>
+                            <!-- Categoria -->
+                            Categoria:
+                            <input type="text" name="categoria_tarea" placeholder="Programación" class="form-control">
+                            <!-- Fecha limite -->
+                            Fecha límite:
+                            <input type="date" name="fecha_limite" class="form-control" value="2021-05-24">
+
+                        </div>
+                        <!-- btn-block hace que el boton ocupe totalmente el ancho -->
+                        <button type="submit" class="btn btn-primary btn-block"> Guardar
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <!-- Las etiquetas <ul> y <li> sirven para crear listas en HTML -->
+                    <ul class="list-group">
+                        <!-- Gracias a Jinja se puede introducir codigo Python en nuestro HTML
+                         y Python se encarga de ejecutarlo e interpretarlo -->
+                        {% for tarea in lista_de_tareas %}
+                        <li class="list-group-item card_item">
+                            <!-- contenido es la variable de la clase Tarea que almacena el texto de la tarea -->
+                            <span class="{% if tarea.hecha==true %} tarea_hecha {% endif %}"> {{tarea.contenido}}
+                                </span>
+                            <!--Botones-->
+                            <!--Usamos pointer-events: none para que el boton no se pueda clickear y conserve su aspecto-->
+                            <button type="button" class="btn btn-info categoria" style="pointer-events: none">
+                                {{tarea.categoria}}
+                            </button>
+                            <a href="/eliminar-tarea/{{tarea.id}}" style="text-decoration:none">
+                                <svg class="bi bi-trash pull-right" width="2em" height="2em" viewBox="0 0 16 16"
+                                     fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0
+                                        01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0
+                                        01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0
+                                        011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5
+                                        3V2h11v1h-11z" clip-rule="evenodd"/>
+                                </svg>
+                                <a href="/tarea-editada/{{tarea.id}}" style="text-decoration:none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor"
+                                         class="bi bi-pencil-square pull-right" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0
+                                        1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.41
+                                        4a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-
+                                        1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.
+                                        5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                    </svg>
+                                </a>
+                                <a href="/tarea-hecha/{{tarea.id}}" style="text-decoration:none">
+                                    <svg class="bi bi-check-box pull-right" width="2em" height="2em"
+                                         viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708
+                                         0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z"
+                                              clip-rule="evenodd"/>
+                                        <path fill-rule="evenodd" d="M1.5 13A1.5 1.5 0 003 14.5h10a1.5 1.5 0
+                                        001.5-1.5V8a.5.5 0 00-1 0v5a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5V3a.5.5 0
+                                        01.5-.5h8a.5.5 0 000-1H3A1.5 1.5 0 001.5 3v10z" clip-rule="evenodd"/>
+                                    </svg>
+                                </a>
+                            </a>
+                            <span class="{% if tarea.check_date==true %} tarea_expirada {% endif %}">
+                                    <br>{{tarea.fecha_limite}}
+                                </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>
